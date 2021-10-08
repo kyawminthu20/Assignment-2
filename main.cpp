@@ -9,21 +9,19 @@
 #include <bits/stdc++.h>
 #include <algorithm>
 
-
-
 using namespace std;
 //Functions
 int count_line(string);
 
-
-
 // for string delimiter
-vector<string> split_string (string s, string delimiter) {
+vector<string> split_string (string s, string delimiter) 
+{
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
     vector<string> res;
 
-    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) 
+    {
         token = s.substr (pos_start, pos_end - pos_start);
         pos_start = pos_end + delim_len;
         res.push_back (token);
@@ -34,8 +32,6 @@ vector<string> split_string (string s, string delimiter) {
 }
 
 
-//Global Variables
-
 void read_line(int line_count, string filename, vector<string> &line_data)
 {
   ifstream dataIn;	// defines an input stream for a data file
@@ -43,7 +39,6 @@ void read_line(int line_count, string filename, vector<string> &line_data)
   string test;
   dataIn.open(filename);
   
-
   if (dataIn)
   {
     while(getline(dataIn, test))
@@ -122,7 +117,7 @@ void look_up_year_range(int number_of_data,Disaster data[])
         cin >> b_year; 
         cout << "   Enter ending year: ";
         cin >> e_year;
-  cout << "All Disasters between " << b_year << " and " << e_year << " :" << endl;
+  cout << endl << "All Disasters between " << b_year << " and " << e_year << " :" << endl;
   for(int l = 0; l < number_of_data; l++)
   {
     stringstream geek(data[l].syear);
@@ -149,7 +144,8 @@ void look_up_name(int number_of_data,Disaster data[])
   //cout << s << endl;
   //cout << number_of_data << endl;
   int count_result = 0;
-  cout << "Years when disaster happened are: " ;
+  cout << endl;
+  cout << "   Years when disaster happened are: " ;
   for(int i=0; i < number_of_data; i++ )
   {
     //cout << data[i].stype << "    " << data[i].syear <<  endl;
@@ -199,7 +195,7 @@ void generate_summary(int number_of_data,Disaster data[])
 
   ofstream myfile;
   myfile.open (f_output_name);
-  myfile << "Writing this to a file.\n";
+  
   double n=1;
   int colWidth=15;
 
@@ -221,86 +217,59 @@ void generate_summary(int number_of_data,Disaster data[])
 // Gather List of Disaster
 int year_count = 0;
 vector<string> list_of_disaster;
-for (int d = 0; d < year.size(); d++)
-{
-  string s ="";
+int yearly_death[year.size()];
 
-  for(int c = 0; c < number_of_data; c++)
+//Outermost loop is for all unique year
+
+  for (int d = 0; d < year.size(); d++)
   {
-    string searchstring = data[c].stype;
-    
-    if(year[d] == data[c].syear)
+    string s ="";
+    int d_no = 0;
+    yearly_death[d] = 0;
+
+    //This loop is for all data
+
+    for(int c = 0; c < number_of_data; c++)
     {
-
-      size_t found = s.find(searchstring);
-
-
-      if (s.empty())
+      string searchstring = data[c].stype;
+      
+      // checking year and appending it to the string to display
+      if(year[d] == data[c].syear)
       {
-        s = s + data[c].stype;
-      }
-      else if(found!=std::string::npos)
-          s = s;
-      else
-          s = s + ", " + data[c].stype;
 
+        size_t found = s.find(searchstring);
 
-      /*
-      if(find(list_of_disaster.begin(), list_of_disaster.end(), data[c].stype) != list_of_disaster.end())
-      {
-        cout << "found " << data[c].stype  << endl;
-
-      }
-      else
-      {
-        //cout << data[c].stype << endl;
-        cout << "Not found " << data[c].stype  << endl;
         if (s.empty())
         {
           s = s + data[c].stype;
         }
+        else if(found!=std::string::npos)
+            s = s;
         else
-           s = s + ", " + data[c].stype;
+            s = s + ", " + data[c].stype;
+      
+
+        stringstream geek(data[c].sdeath_no);
+        geek >> d_no;
+
+        yearly_death[d] = yearly_death[d] + d_no;
+
       }
-      */
     }
+    //cout << s << endl;
+    //cout << yearly_death[d] << endl;
+    list_of_disaster.push_back(s);
   }
-  //cout << s << endl;
-  //list_of_disaster.push_back(s);
-}
 
-//cout << list_of_disaster.size() << endl;
+  myfile << "Years; Disasters;  Total deaths" << endl;
 
-
-
-
-
-
-
-
-  //table header 
-
-  cout << endl;
-  cout << setfill(' ') << fixed;
-  cout << setw(colWidth) << "Year" << setw(colWidth) << "Disaster" << setw(20) << 
-  "Total Death" << endl << endl;; 
-
-  cout << setfill(' ') << fixed; 
-
-  int k;
-  // create table of data 
-  for(k = 0; k < year.size(); k++)
-  
-  { 
-    cout << setprecision(0) << setw(colWidth) << year[k] << setprecision(4) << 
-    setw(20)
-    << list_of_disaster[k] << setw(colWidth) << sqrt(n) << endl;
+  for(int d = 0; d < year.size(); d++)
+  {
+    myfile << year[d] << "; " << list_of_disaster[d] << "; " << yearly_death[d] << "." << endl;
 
   }
 
-
-
-  myfile.close();
+    myfile.close();
   
 }
 
@@ -314,7 +283,8 @@ int main()
 
   string comma_delim = ",";   // delimiter for the text
   Disaster data[number_of_data];  // declare class Disaster with the name Data[number_of_data]
-//Read the data and store it in the object array
+  
+  //Read the data and store it in the object array
   for(int i=0; i < number_of_data; i++ )
   {
     vector<char> temp;
@@ -349,7 +319,7 @@ int main()
   
   
 
-// Menu 
+  // Menu 
   int c = 0;
   string s, f_output_name;
   while(c != 1 && c != 2 && c != 3)
@@ -364,7 +334,9 @@ int main()
     cin.clear();
     cin >> s;
 
-    if(s == "x")
+
+    // Quit the program
+    if(s == "x" || s == "X")
     {
       return 0;
     }

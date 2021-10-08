@@ -1,0 +1,9 @@
+Years; Disasters;  Total deaths
+2012; Severe Storm, Tropical Cyclone, Wildfire, Drought; 327.
+2013; Severe Storm, Flooding, Drought; 113.
+2014; Winter Storm, Severe Storm, Flooding, Drought; 53.
+2015; Winter Storm, Severe Storm, Flooding, Wildfire, Drought; 155.
+2016; Severe Storm, Flooding, Tropical Cyclone, Wildfire, Drought; 138.
+2017; Severe Storm, Flooding, Freeze, Tropical Cyclone, Wildfire, Drought; 3278.
+2018; Winter Storm, Severe Storm; 39.
+2019; Severe Storm; 4.
