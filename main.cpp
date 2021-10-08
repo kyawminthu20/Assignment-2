@@ -7,6 +7,9 @@
 #include <vector>
 #include <ctype.h>
 #include <bits/stdc++.h>
+#include <algorithm>
+
+
 
 using namespace std;
 //Functions
@@ -131,9 +134,7 @@ void look_up_year_range(int number_of_data,Disaster data[])
       cout << "   " << data[l].sname << endl;
     }
     
-
   }
-
   
 }
 
@@ -141,40 +142,47 @@ void look_up_name(int number_of_data,Disaster data[])
 {
   string s;
   vector<string> result;
+  result.clear();
   cin.ignore();
   cout << "   Enter a Disaster name: ";
   getline(cin,s);
-  cout << s << endl;
-  cout << number_of_data << endl;
+  //cout << s << endl;
+  //cout << number_of_data << endl;
   int count_result = 0;
-  cout << "Years when disaster happened are: " << endl;
+  cout << "Years when disaster happened are: " ;
   for(int i=0; i < number_of_data; i++ )
   {
-    cout << data[i].stype << "    " << data[i].syear <<  endl;
-    cout << "----------------" << endl;
+    //cout << data[i].stype << "    " << data[i].syear <<  endl;
+    //cout << "----------------" << endl;
   
-    if (data[i].stype .find(s) != string::npos) {
-    cout <<  data[i].syear << endl;
-    if(find(result.begin(), result.end(), data[i].syear) != result.end())
+    if (data[i].stype .find(s) != string::npos) 
     {
-      cout << "Not in the array" << endl;
-      result.push_back(data[i].syear);
+      //cout <<  data[i].syear << endl;
+      //result.push_back(data[i].syear);
+      
+      if(find(result.begin(), result.end(), data[i].syear) != result.end())
+      {
+        //cout << "added" << endl;
+      }
+      else
+      {
+        //cout << "Not in the array" << endl;
+        result.push_back(data[i].syear);
+      }
+      count_result++;
     }
-    count_result++;
-    }
+    //cout << endl;
   }
+  //cout << result.size() << endl;
 
-  for(int i=0; i < result.size(); i++)
-  {
-    cout << "result   ----" << endl;
-    cout << result.at(i) << endl;
-  }
-  
-  
-
-  
-
-
+      for (auto k = 0; k < result.size(); k++)
+      {
+        cout << result[k];
+        if (k < (result.size()-1))
+          cout << ", ";
+      }
+    
+    cout << endl << endl;
 
 
 }
@@ -182,12 +190,117 @@ void look_up_name(int number_of_data,Disaster data[])
 void generate_summary(int number_of_data,Disaster data[])
 {
   string f_output_name;
+  vector<vector<string>> result;
+  vector<string> year;
   cin.ignore();
   cout << "   Enter output file name: ";
   getline(cin,f_output_name);
+
+
+  ofstream myfile;
+  myfile.open (f_output_name);
+  myfile << "Writing this to a file.\n";
+  double n=1;
+  int colWidth=15;
+
+// get unique Year
+  for(int i = 0; i < number_of_data; i++)
+  {
+    //cout << data[i].syear << endl;
+    if(find(year.begin(), year.end(), data[i].syear) != year.end())
+    {
+        //cout << data[i].syear << "  added" << endl;
+    }
+    else
+    {
+        //cout << data[i].syear << "  Not in the array" << endl;
+        year.push_back(data[i].syear);
+    }
+    //cout << year.size() << endl;
+  }
+// Gather List of Disaster
+int year_count = 0;
+vector<string> list_of_disaster;
+for (int d = 0; d < year.size(); d++)
+{
+  string s ="";
+
+  for(int c = 0; c < number_of_data; c++)
+  {
+    string searchstring = data[c].stype;
+    
+    if(year[d] == data[c].syear)
+    {
+
+      size_t found = s.find(searchstring);
+
+
+      if (s.empty())
+      {
+        s = s + data[c].stype;
+      }
+      else if(found!=std::string::npos)
+          s = s;
+      else
+          s = s + ", " + data[c].stype;
+
+
+      /*
+      if(find(list_of_disaster.begin(), list_of_disaster.end(), data[c].stype) != list_of_disaster.end())
+      {
+        cout << "found " << data[c].stype  << endl;
+
+      }
+      else
+      {
+        //cout << data[c].stype << endl;
+        cout << "Not found " << data[c].stype  << endl;
+        if (s.empty())
+        {
+          s = s + data[c].stype;
+        }
+        else
+           s = s + ", " + data[c].stype;
+      }
+      */
+    }
+  }
+  //cout << s << endl;
+  //list_of_disaster.push_back(s);
+}
+
+//cout << list_of_disaster.size() << endl;
+
+
+
+
+
+
+
+
+  //table header 
+
+  cout << endl;
+  cout << setfill(' ') << fixed;
+  cout << setw(colWidth) << "Year" << setw(colWidth) << "Disaster" << setw(20) << 
+  "Total Death" << endl << endl;; 
+
+  cout << setfill(' ') << fixed; 
+
+  int k;
+  // create table of data 
+  for(k = 0; k < year.size(); k++)
   
+  { 
+    cout << setprecision(0) << setw(colWidth) << year[k] << setprecision(4) << 
+    setw(20)
+    << list_of_disaster[k] << setw(colWidth) << sqrt(n) << endl;
+
+  }
 
 
+
+  myfile.close();
   
 }
 
@@ -201,8 +314,6 @@ int main()
 
   string comma_delim = ",";   // delimiter for the text
   Disaster data[number_of_data];  // declare class Disaster with the name Data[number_of_data]
-
-
 //Read the data and store it in the object array
   for(int i=0; i < number_of_data; i++ )
   {
@@ -240,47 +351,47 @@ int main()
 
 // Menu 
   int c = 0;
-  char s, f_output_name;
+  string s, f_output_name;
   while(c != 1 && c != 2 && c != 3)
   {
     cout << endl; 
     cout << "What would you like to do?" << endl;
     cout << "   1: Look up year range" << endl; 
     cout << "   2: Look up disaster"  << endl;
-    cout << "   3: Generate summary report" << endl << endl;
+    cout << "   3: Generate summary report" << endl;
+    cout << "   x: To exist from the program" << endl << endl;
     cout << "Select an option : " ;
     cin.clear();
     cin >> s;
-    cout << isalpha(s) << endl;
 
-    if(isdigit(s))
-      cout << "Enter Integer" << endl;
-    }
-    else
+    if(s == "x")
     {
-      
-      switch(c)
-      {
-        case 1:
-          look_up_year_range(number_of_data,data);
-          break;
-        
-        case 2:
-          look_up_name(number_of_data,data);
-          break;
-        
-        case 3:
-          generate_summary(number_of_data, data);
-          break;
-        
-        default :
-          cout << "Invalid input" << endl;
-          break;
-      }
-      c = 0;
-
-
+      return 0;
     }
+
+    stringstream geek(s);
+    geek >> c;
+    
+    switch(c)
+    {
+      case 1:
+        look_up_year_range(number_of_data,data);
+        break;
+      
+      case 2:
+        look_up_name(number_of_data,data);
+        break;
+      
+      case 3:
+        generate_summary(number_of_data, data);
+        break;
+      
+      default :
+        cout << endl << "     **Invalid input**" << endl;
+        cout << endl << "     **Enter (1 or 2 or 3) and x for exit**" << endl;
+        break;
+    }
+    c = 0;
   }
 
 	return 0;
